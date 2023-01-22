@@ -1,54 +1,32 @@
-const buttonAdd = document.getElementById('tasks__add');
-buttonAdd.setAttribute('type', 'button');
+const inputField = document.getElementById('task__input');
+const addingButton = document.getElementById('tasks__add');
+const taskList = document.getElementById('tasks__list')
 
-const inputAdd = document.getElementById('task__input');
-const toDoList = document.getElementById('tasks__list');
+addingButton.addEventListener('click', (e)=>{
+    const itemToDo = document.createElement('div');
+    itemToDo.classList.add('task');
 
-let eventBrought = false;
+    const itemTitle = document.createElement('div');
+    itemTitle.classList.add('task__title');
 
-function addToDoList(event) {
+    const deleteItem = document.createElement('a');
+    deleteItem.classList.add('task__remove');
+    deleteItem.setAttribute('href', '');
+    deleteItem.innerHTML = '&times;';
+    itemToDo.insertAdjacentElement('afterbegin', itemTitle);
+    itemToDo.insertAdjacentElement('beforeend', deleteItem);
+    itemTitle.innerText = inputField.value;
 
-    event.preventDefault();
-    
-    if (inputAdd.value != '') {
+    if(itemTitle.innerText) {
+        taskList.insertAdjacentElement('afterbegin', itemToDo);
+        inputField.value = '';
+    };
 
-        toDoList.innerHTML += `
-        <div class="task">
-            <div class="task__title">
-                ${inputAdd.value}
-            </div>
-            <a href="#" class="task__remove">&times;</a>
-        </div>`
-        
-        inputAdd.value = '';
-        eventBrought = true;
+    deleteItem.addEventListener('click', (e)=>{
+        let tipToDelete = deleteItem.closest('.task');
+        tipToDelete.parentNode.removeChild(tipToDelete);
+        e.preventDefault();
+    });
 
-    }
-
-    if (eventBrought) {
-
-        let arrayToDo = document.querySelectorAll('.task__remove')
-
-        for (let i = 0; i < arrayToDo.length; i++) arrayToDo[i].onclick = function() {
-
-            let yet = arrayToDo[i].closest('.task');
-            yet.remove();
-            eventBrought = false;
-
-        }
-
-        eventBrought = true;
-
-    }
-
-}
-
-inputAdd.addEventListener('keydown', function(e) {
-
-    if (e.keyCode == 13) {
-        addToDoList(e);
-    }
-
+    e.preventDefault();
 });
-
-buttonAdd.addEventListener('click', addToDoList);

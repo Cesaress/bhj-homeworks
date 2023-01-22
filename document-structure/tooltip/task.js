@@ -1,56 +1,35 @@
-const arrayTooltip = Array.from(document.querySelectorAll('.has-tooltip'));
-let activeTooltip = 0;
-let newDiv = [];
+const toolTips = Array.from(document.getElementsByClassName('has-tooltip'));
 
-for (let i = 0; i < arrayTooltip.length; i++) {
+for (let tip of toolTips) {
+    const toolTipText = tip.getAttribute('title');
+    const tipDiv = document.createElement('div');
 
-    let active = false;
-    let textTooltip = arrayTooltip[i].getAttribute('title');
-    newDiv[i] = document.createElement('div');
-    newDiv[i].classList.add('tooltip');
-    newDiv[i].innerHTML = `${textTooltip}`;
+    tipDiv.innerText = toolTipText;
+    tipDiv.classList.add('tooltip');
 
+    tip.insertAdjacentElement("afterend", tipDiv);
+    tip.addEventListener('click', (e)=> {
+        let tipPosition = tip.getBoundingClientRect();
+        let arrOfTips = Array.from(document.getElementsByClassName('tooltip'));
 
-    arrayTooltip[i].onclick = function(event) {
-
-        event.preventDefault();
-
-        if (i !== activeTooltip) {
-
-            newDiv[activeTooltip].remove();
-            active = false;
-
-        }
-
-        if (!active) {
-
-            newDiv[i].classList.add('tooltip_active');
-            arrayTooltip[i].append(newDiv[i]);
-            let coords = arrayTooltip[i].getBoundingClientRect();
-
-            let left = coords.left + (arrayTooltip[i].offsetWidth - newDiv[i].offsetWidth) / 2;
-            if (left < 0) { // не заезжать за левый край окна
-                left = 0;
-            }
-
-            let top = coords.top - newDiv[i].offsetHeight - 5;
-            if (top < 0) { // если подсказка не помещается сверху, то отображать её снизу
-                top = coords.top + arrayTooltip[i].offsetHeight + 5;
-            }
-
-            newDiv[i].style.left = left + 'px';
-            newDiv[i].style.top = top + 'px';
-
-            active = true;
-            activeTooltip = i;
-
+        if (!arrOfTips.some((item)=>item.classList.contains('tooltip_active'))) {
+            tipDiv.classList.toggle('tooltip_active');
+            tipDiv.style.left = tipPosition.left + 'px';
+            tipDiv.style.top = tipPosition.bottom + 'px';
         } else {
+            let activeTip = arrOfTips.find((item)=> item.classList.contains('tooltip_active'));
+            activeTip.classList.remove('tooltip_active');
 
-            newDiv[i].remove();
-            active = false;
-
+            tipDiv.classList.add('tooltip_active');
+            tipDiv.style.left = tipPosition.left + 'px';
+            tipDiv.style.top = tipPosition.bottom + 'px';
+            
+            if(tipDiv === activeTip) {
+                tipDiv.classList.remove('tooltip_active');
+            }
         }
 
-    }
+        e.preventDefault();
 
-}
+    });
+};
