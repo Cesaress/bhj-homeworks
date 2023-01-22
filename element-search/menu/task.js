@@ -1,37 +1,22 @@
-const listLink = document.querySelectorAll('.menu__link');
+let menuLink = Array.from(document.getElementsByClassName('menu__link'));
 
-let arrLink = Array.from(listLink);
-let activeNumber = 0;
+menuLink.forEach(element => {
+    let sub = element.parentElement.querySelector('.menu_sub')
 
-for (let i = 0; i < arrLink.length; i++) {
-
-    let active = false;
-    
-    arrLink[i].onclick = function() {
-
-        let popUpMenu = arrLink[i].closest('.menu__item').querySelector('.menu_sub');
-        let popUpMenuStart = arrLink[activeNumber].closest('.menu__item').querySelector('.menu_active');
-
-        if ((popUpMenuStart != null) && (i != activeNumber)) {
-
-            popUpMenuStart.classList.remove('menu_active');
-            active = false;
-
+    if (sub !== null) {
+        element.onclick = function() {
+            let newClass = changer(sub.getAttribute('class'));
+            sub.setAttribute('class', newClass);
+            return false
         };
+    };
 
-        if (!active) {
+});
 
-            popUpMenu.classList.add('menu_active');
-            active = true;
-            activeNumber = i;
-
-        } else {
-
-            popUpMenu.classList.remove('menu_active');
-            active = false;      
-                  
-        }
-        
-        return false;
-    }
-}
+function changer(name) {
+    if (name === 'menu menu_sub') {
+        return 'menu menu_sub menu_active';
+    } else if (name === 'menu menu_sub menu_active') {
+        return 'menu menu_sub';
+    };
+};
