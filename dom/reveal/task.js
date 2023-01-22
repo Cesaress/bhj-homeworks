@@ -1,21 +1,13 @@
-let arrReveal = Array.from(document.querySelectorAll('.reveal'));
+let hiddenBlocks = Array.from(document.getElementsByClassName('reveal'));
 
-for (let i = 0; i < arrReveal.length; i++) {
+let revealBlock = function() {
+    for (let block of hiddenBlocks) {
+        let blockPosition = block.getBoundingClientRect().top;
 
-    window.addEventListener('scroll', function() {
+        if (blockPosition<window.innerHeight) {
+            block.classList.add('reveal_active')
+        };
+    };
+};
 
-        if (arrReveal[i].getBoundingClientRect().top < window.innerHeight) {
-
-            arrReveal[i].classList.add('reveal_active');
-
-        }
-    
-        if ((arrReveal[i].getBoundingClientRect().bottom <= 0) || (arrReveal[i].getBoundingClientRect().top >= window.innerHeight)) {
-
-            arrReveal[i].classList.remove('reveal_active');
-
-        }
-
-    })
-    
-}
+document.addEventListener('scroll', revealBlock);

@@ -1,103 +1,64 @@
-let bookContent = document.getElementById('book');
+const getOtherEffectClassNames = (currentEffect, effects)=> {
+    const result = []
+    for (const effect of effects) {
+        if(effect.id !== currentEffect.id) {
+            result.push(effect.className)
+        }
+    }
+    return result
+};
 
-let arrSizeText = Array.from(document.querySelectorAll('.font-size'));
-let activeSize = 1;
-
-for (let i = 0; i < arrSizeText.length; i++) {
-
-    arrSizeText[i].addEventListener('click', () => {
-
-        arrSizeText[activeSize].classList.remove('font-size_active');
-        activeSize = i;
-        arrSizeText[activeSize].classList.add('font-size_active');
-
-        if (arrSizeText[i].classList.contains('font-size_small')) {
-
-            bookContent.classList.remove('book_fs-big');
-            bookContent.classList.add('book_fs-small');
-
-        } else if (arrSizeText[i].classList.contains('font-size_big')) {
-
-            bookContent.classList.remove('book_fs-small')
-            bookContent.classList.add('book_fs-big');
-
-            } else {
-
-                bookContent.classList.remove('book_fs-big');
-                bookContent.classList.remove('book_fs-small');
-
+const createButtonGroup = ({
+    buttonClassName, contentId, activeClassName, effectClassNames
+})=> {
+    const buttons = Array.from(document.querySelectorAll(buttonClassName));
+    const content = document.getElementById(contentId)
+    for (const button of buttons) {
+        button.addEventListener('click', (event)=> {
+            event.preventDefault()
+            const activeButton = buttons.find(index=>index.classList.contains(activeClassName))
+            activeButton.classList.remove(activeClassName);
+            button.classList.add(activeClassName);
+            for (const effect of effectClassNames) {
+                const otherEffectClassNames = getOtherEffectClassNames(effect, effectClassNames)
+                if (button.classList.contains(effect.id)) {
+                    content.classList.remove(...otherEffectClassNames);
+                    content.classList.add(effect.className)
+                }
             }
+        })
+    }
+};
 
-        event.preventDefault();
+createButtonGroup({
+    buttonClassName: '.font-size',
+    contentId: 'book',
+    activeClassName: 'font-size_active',
+    effectClassNames: [
+        {id:'font-size_small', className: 'book_fs-small'},
+        {id:'font-size_normal', className: 'book_fs-normal'},
+        {id:'font-size_big', className: 'book_fs-big'}
+    ]
+});
 
-    });
-}
+createButtonGroup({
+    buttonClassName: '.book__control_color .color',
+    contentId: 'book',
+    activeClassName: 'color_active',
+    effectClassNames: [
+        {id:'text_color_black', className: 'book_color-black'},
+        {id:'text_color_gray', className: 'book_color-gray'},
+        {id:'text_color_whitesmoke', className: 'book_color-whitesmoke'}
+    ]
+});
 
-const colorText = document.querySelector('.book__control_color');
-let arrColorText = Array.from(colorText.querySelectorAll('.color'));
-let activeColorText = 0;
-
-for (let k = 0; k < arrColorText.length; k++) {
-
-    arrColorText[k].addEventListener('click', () => {
-
-        arrColorText[activeColorText].classList.remove('color_active');
-        activeColorText = k;
-        arrColorText[activeColorText].classList.add('color_active');
-
-        if (arrColorText[k].classList.contains('color_gray')) {
-
-            bookContent.classList.remove('book_color-whitesmoke');
-            bookContent.classList.add('book_color-gray');
-
-        } else if (arrColorText[k].classList.contains('color_whitesmoke')) {
-
-            bookContent.classList.remove('book_color-gray')
-            bookContent.classList.add('book_color-whitesmoke');
-
-            } else {
-
-                bookContent.classList.remove('book_color-whitesmoke');
-                bookContent.classList.remove('book_color-gray');
-
-            }
-
-        event.preventDefault();
-
-    });
-}
-
-const colorBg = document.querySelector('.book__control_background');
-let arrColorBg = Array.from(colorBg.querySelectorAll('.color'));
-let activeColorBg = 2;
-console.log(arrColorBg);
-
-for (let j = 0; j < arrColorBg.length; j++) {
-
-    arrColorBg[j].addEventListener('click', () => {
-
-        arrColorBg[activeColorBg].classList.remove('color_active');
-        activeColorBg = j;
-        arrColorBg[activeColorBg].classList.add('color_active');
-
-        if (arrColorBg[j].classList.contains('color_black')) {
-
-            bookContent.classList.remove('book_bg-gray');
-            bookContent.classList.add('book_bg-black');
-
-        } else if (arrColorBg[j].classList.contains('color_gray')) {
-
-            bookContent.classList.remove('book_bg-black')
-            bookContent.classList.add('book_bg-gray');
-
-            } else {
-
-                bookContent.classList.remove('book_bg-black');
-                bookContent.classList.remove('book_bg-gray');
-
-            }
-
-        event.preventDefault();
-
-    });
-}
+createButtonGroup({
+    buttonClassName: '.book__control_background .color',
+    contentId: 'book',
+    activeClassName: 'color_active',
+    effectClassNames: [
+        {id:'bg_color_black', className: 'book_bg-black'},
+        {id:'bg_color_gray', className: 'book_bg-gray'},
+        {id:'bg_color_white', className: 'book_bg-white'}
+    ]
+});
